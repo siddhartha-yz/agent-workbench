@@ -1,0 +1,8 @@
+{
+  "spatial": "first",
+  "iteration": "revised",
+  "routing": "axis-revised",
+  "execution": "revised",
+  "holdout-iteration": "first",
+  "holdout-spatial": "layout-revised"
+}

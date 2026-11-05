@@ -1,0 +1,235 @@
+/* Algebra marks reuse exact calculations. Abstract witnesses stay explicitly labelled. */
+(function (global) {
+  const V = global.VisualBook, A = global.VisualBookAlgebra, P = V.palette;
+  const short = (s, max=32) => { if (typeof s !== 'string' || s.length>max) throw Error('Use a short drawing label'); return s; };
+  const dot = (a,b) => a.reduce((s,x,i)=>s+x*b[i],0);
+  const pair = v => { if (!Array.isArray(v)||v.length!==2||!v.every(Number.isFinite)) throw Error('Finite 2D vector required'); return v; };
+  const subscript = i => String(i).replace(/\d/g,n=>'₀₁₂₃₄₅₆₇₈₉'[Number(n)]);
+  function clippedCurve(board,id,frame,points,options) {
+    const a=points[0],b=points[1],xd=frame.x.domain(),yd=frame.y.domain();let low=0,high=1;
+    for(let i=0;i<2;i++) {
+      const delta=b[i]-a[i],range=i===0?xd:yd;
+      if(Math.abs(delta)<1e-14) {if(a[i]<range[0]||a[i]>range[1])return null;}
+      else {const ts=[(range[0]-a[i])/delta,(range[1]-a[i])/delta].sort((x,y)=>x-y);low=Math.max(low,ts[0]);high=Math.min(high,ts[1]);}
+    }
+    if(high<low)return null;
+    return board.curve(id,frame,[a.map((x,i)=>x+(b[i]-x)*low),a.map((x,i)=>x+(b[i]-x)*high)],options);
+  }
+  function fraction(board,id,value,x,y,{size=16,color=P.ink,maxWidth=60}={}) {
+    const s=String(value),parts=s.split('/');
+    if (!/^-?\d+(?:\/\d+)?$/.test(s)) throw Error('Exact matrix needs rational strings');
+    if (parts.some(p=>V.measure(p,size)>maxWidth)) throw Error('Fraction needs more cell space; shorten the example');
+    if (parts.length===1) board.text(id,s,x,y+size*.35,{size,color,anchor:'middle',halo:false});
+    else {
+      board.text(id+'-numerator',parts[0],x,y-3,{size:Math.max(12,size-2),color,anchor:'middle',halo:false});
+      board.text(id+'-denominator',parts[1],x,y+size+1,{size:Math.max(12,size-2),color,anchor:'middle',halo:false});
+      const w=Math.max(...parts.map(p=>V.measure(p,Math.max(12,size-2))))+6;
+      board.line(id+'-bar',x-w/2,y+1,x+w/2,y+1,color,1);
+    }
+  }
+  function operationLabel(op) {
+    if (!op || op.kind==='initial') return '原方程组';
+    const row='R'+subscript(op.row+1),source='R'+subscript((op.source??0)+1);
+    if(op.kind==='swap')return row+' ↔ '+source;
+    if(op.kind==='scale')return row+' ← ('+op.factorExact+')'+row;
+    return row+' ← '+row+(op.factor<0?' − ':' + ')+String(op.factorExact).replace(/^-/,'')+source;
+  }
+  function exactMatrix(board,{data,coefficientColumns,operation=null,pivotColumns=[],title=''}={}) {
+    if(!Array.isArray(data)||!data.length||data.length>6||!Array.isArray(data[0])||!data[0].length||data[0].length>8||data.some(row=>!Array.isArray(row)||row.length!==data[0].length))throw Error('Exact drawing matrix must be 1..6 by 1..8');
+    data=data.map(row=>A.coefficientLiterals(row).values);
+    const rows=data.length,cols=data[0].length,n=coefficientColumns??cols;
+    if(!Number.isInteger(n)||n<1||n>cols||!Array.isArray(pivotColumns)||pivotColumns.some(j=>!Number.isInteger(j)||j<0||j>=n))throw Error('Invalid coefficient/pivot columns');
+    short(title); const top=title?58:36,left=26,right=board.width-26,bottom=board.height-23,cw=(right-left)/cols,rh=(bottom-top)/rows;
+    if(cw<30||rh<44)throw Error('Keep exact fractions at least 12px; matrix needs more space');
+    if(title)board.text('title',title,18,19,{size:14,halo:false});
+    if(operation)board.label('operation',operationLabel(operation),18,title?41:18,{size:13,maxWidth:board.width-36,avoid:false,color:P.blue});
+    for(let i=0;i<rows;i++)for(let j=0;j<cols;j++) {
+      const focus=operation&&operation.kind!=='initial'&&operation.row===i, source=operation&&operation.kind==='add'&&operation.source===i;
+      board.rect(`cell-${i}-${j}`,left+j*cw+2,top+i*rh+2,cw-4,rh-4,focus?P.blue:source?P.orange:P.faint,{opacity:(focus || source) ? .12 : .24,rx:5});
+      const zero=String(data[i][j])==='0',pivot=pivotColumns.includes(j)&&i===pivotColumns.indexOf(j);
+      fraction(board,`value-${i}-${j}`,data[i][j],left+(j+.5)*cw,top+(i+.5)*rh,{size:16,color:pivot?P.green:zero?P.muted:P.ink,maxWidth:cw-10});
+      if(pivot)board.line(`pivot-${i}-${j}`,left+j*cw+9,top+(i+1)*rh-8,left+(j+1)*cw-9,top+(i+1)*rh-8,P.green,2);
+    }
+    for(const x of [left-8,right+8])board.path('bracket-'+x,[[x+(x<left?5:-5),top],[x,top],[x,bottom],[x+(x<left?5:-5),bottom]],{color:P.muted,width:1.6});
+    if(n<cols)board.line('rhs-separator',left+n*cw,top-2,left+n*cw,bottom+2,P.orange,1.2,.8);
+    return {data,coefficientColumns:n,operation,pivotColumns,convention:'Exact entries, elementary-operation provenance and an explicit RHS separator. Pivot marks must be supplied for the displayed stage.'};
+  }
+  function basisFrame(board,{basis=[[1,0],[0,1]],vector=[2,1],progress=1,xDomain=[-3,4],yDomain=[-2,3],gridExtent=3,title='',labels=['b₁','b₂']}={}) {
+    pair(vector);short(title);if(!Array.isArray(labels)||labels.length!==2)throw Error('Two basis labels required');labels.forEach(s=>short(s,12));
+    const facts=A.changeBasis({sourceBasis:[[1,0],[0,1]],targetBasis:basis,vector});
+    if(facts.targetBasis.length!==2||!Number.isInteger(gridExtent)||gridExtent<1||gridExtent>6)throw Error('Basis drawing is 2D; grid extent 1..6');
+    if(!Number.isFinite(progress)||progress<0||progress>1)throw Error('Construction progress must be 0..1');
+    const b=facts.targetBasis,c=facts.targetCoordinates,u=[b[0][0],b[1][0]],v=[b[0][1],b[1][1]];
+    const f=V.plotFrame(board,'axes',{title:title||null,xDomain,yDomain,equalUnits:true,grid:false,footerHeight:31});
+    for(let k=-gridExtent;k<=gridExtent;k++) {
+      clippedCurve(board,'grid-u-'+k,f,[[-gridExtent*u[0]+k*v[0],-gridExtent*u[1]+k*v[1]],[gridExtent*u[0]+k*v[0],gridExtent*u[1]+k*v[1]]],{color:P.blue,width:1,opacity:.13});
+      clippedCurve(board,'grid-v-'+k,f,[[k*u[0]-gridExtent*v[0],k*u[1]-gridExtent*v[1]],[k*u[0]+gridExtent*v[0],k*u[1]+gridExtent*v[1]]],{color:P.violet,width:1,opacity:.13});
+    }
+    board.vector('basis-u',f,[0,0],u,{color:P.blue,label:labels[0]});board.vector('basis-v',f,[0,0],v,{color:P.violet,label:labels[1]});
+    const a=u.map(x=>x*c[0]), first=Math.min(1,progress*2),second=Math.max(0,progress*2-1);
+    if(first>0)board.vector('component-u',f,[0,0],a.map(x=>x*first),{color:P.blue});
+    if(second>0)board.vector('component-v',f,a,a.map((x,i)=>x+second*c[1]*v[i]),{color:P.violet});
+    board.vector('physical-vector',f,[0,0],vector,{color:P.gold,label:'x'});
+    const text='坐标 ('+facts.targetCoordinatesExact.join(', ')+')';
+    board.label('coordinates',text,board.width/2,board.height-11,{size:14,anchor:'middle',maxWidth:board.width-32,avoid:false});
+    return {...facts,constructionProgress:progress,convention:'Two-dimensional column basis. The gold physical vector stays fixed; progress reveals its two basis contributions and does not interpolate through potentially singular bases.'};
+  }
+  function residueGrid(board,{modulus=5,operation='multiply',title=''}={}) {
+    const facts=A.modularTable({modulus,operation});short(title);
+    const top=title?53:28,left=30,right=board.width-12,bottom=board.height-35,cw=(right-left)/modulus,rh=(bottom-top)/modulus;
+    if(cw<23||rh<23)throw Error('Residue table needs 23px cells and 12px type; use a smaller modulus or wider region');
+    if(title)board.text('title',title,14,18,{size:14,halo:false});
+    for(let i=0;i<modulus;i++) {
+      const unit=facts.units.includes(i),zero=facts.zeroDivisors.includes(i);
+      board.text('row-'+i,String(i),left-12,top+(i+.5)*rh+4,{size:12,anchor:'end',color:zero?P.orange:unit?P.blue:P.muted,halo:false});
+      board.text('col-'+i,String(i),left+(i+.5)*cw,top-9,{size:12,anchor:'middle',color:zero?P.orange:unit?P.blue:P.muted,halo:false});
+      for(let j=0;j<modulus;j++) {
+        const value=facts.data[i][j],witness=operation==='multiply'&&i>0&&j>0&&value===0;
+        board.rect(`cell-${i}-${j}`,left+j*cw+1,top+i*rh+1,cw-2,rh-2,witness?P.orange:value===0?P.faint:P.blue,{opacity:witness?.25:value===0?.25:.04+.22*value/(modulus-1),rx:3});
+        board.text(`value-${i}-${j}`,String(value),left+(j+.5)*cw,top+(i+.5)*rh+4,{size:12,anchor:'middle',color:witness?P.orange:P.ink,halo:false});
+      }
+    }
+    const note=operation==='multiply'?(facts.isField?'非零元素都有乘法逆元':'橙色：两个非零元素相乘得到 0'):'逐行循环，运算后取余';
+    board.label('note',note,board.width/2,board.height-11,{size:12,anchor:'middle',maxWidth:board.width-20,avoid:false,color:facts.isField?P.blue:P.orange});
+    return facts;
+  }
+  function jordanChains(board,{input,selectedPower=1,title=''}={}) {
+    const facts=A.jordanProfile({input}),n=facts.input.length;short(title);
+    if(!Number.isInteger(selectedPower)||selectedPower<0||selectedPower>n)throw Error('Power must be integer 0..dimension');
+    const blocks=facts.blockSizes,top=title?48:24,bottom=board.height-35,rh=(bottom-top)/blocks.length,left=48,right=board.width-30;
+    if(rh<58||(right-left)/Math.max(...blocks)<42)throw Error('Jordan chains need more space for their basis marks');
+    if(title)board.text('title',title,14,18,{size:14,halo:false});
+    blocks.forEach((size,row)=>{
+      const y=top+(row+.5)*rh,cw=(right-left)/Math.max(...blocks),xs=Array.from({length:size},(_,j)=>left+(j+.5)*cw);
+      board.text('block-label-'+row,'J'+subscript(size),14,y+4,{size:13,color:P.muted,halo:false});
+      for(let j=0;j<size;j++) {
+        const survives=j>=selectedPower;
+        board.circle(`node-${row}-${j}`,xs[j],y,15,survives?P.blue:P.faint);
+        board.text(`name-${row}-${j}`,'e'+subscript(j+1),xs[j],y+4,{size:12,anchor:'middle',color:survives?P.paper:P.muted,halo:false});
+        if(selectedPower>0&&survives) {
+          const target=xs[j-selectedPower],arc=Math.min(22,rh*.32);
+          board.path(`arrow-${row}-${j}`,[[xs[j],y-18],[xs[j],y-arc],[target,y-arc],[target,y-18]],{color:P.blue,width:1.7});
+          board.path(`head-${row}-${j}`,[[target-4,y-24],[target,y-18],[target+4,y-24]],{color:P.blue,width:1.7});
+        }
+        if(!survives)board.text(`zero-${row}-${j}`,'→ 0',xs[j],y+31,{size:12,anchor:'middle',color:P.muted,halo:false});
+      }
+    });
+    const footer='N'+(selectedPower===1?'':superscript(selectedPower))+'：秩 '+facts.ranks[selectedPower]+'，核维数 '+facts.nullities[selectedPower];
+    board.label('summary',footer,board.width/2,board.height-10,{size:13,anchor:'middle',maxWidth:board.width-24,avoid:false});
+    return {...facts,selectedPower,selectedRank:facts.ranks[selectedPower],selectedNullity:facts.nullities[selectedPower],convention:'Canonical chain-size illustration inferred from exact nullities. e labels are illustrative Jordan coordinates; this tool has not constructed a Jordan basis for the supplied matrix.'};
+  }
+  function superscript(n) {return String(n).replace(/\d/g,c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)]);}
+  function dimensionFiltration(board,{dimensions,ambientDimension,title='',filledLabel='已占维数',remainingLabel='剩余维数',displayLabel='',displayValue=null,color='blue'}={}) {
+    if(!Number.isInteger(ambientDimension)||ambientDimension<1||ambientDimension>8||!Array.isArray(dimensions)||dimensions.length<2||dimensions.length>8||dimensions.some((v,i)=>!Number.isInteger(v)||v<0||v>ambientDimension||(i>0&&v<dimensions[i-1]))) throw Error('Use2..8 nondecreasing integer dimensions within an ambient dimension1..8');
+    short(title,24);short(filledLabel,8);short(remainingLabel,8);short(displayLabel,8);
+    if(!Object.hasOwn(P,color)||displayValue!==null&&(typeof displayValue!=='string'&&typeof displayValue!=='number'||typeof displayValue==='number'&&!Number.isFinite(displayValue))) throw Error('Known color and optional finite scalar display value required');
+    const tag=displayValue===null?'':displayLabel+' = '+String(displayValue);short(tag,24);
+    const left=46,right=board.width-63,top=title||tag?47:24,bottom=board.height-38,rh=(bottom-top)/dimensions.length;
+    if(right-left<130||rh<28||(title&&V.measure(title,14)+(tag?V.measure(tag,13)+30:0)>board.width-24)) throw Error('Dimension bands need130px width,28px rows and readable header labels');
+    if(title)board.text('title',title,12,18,{size:14,halo:false});
+    if(tag)board.text('selected-value',tag,board.width-12,18,{size:13,anchor:'end',color:P.muted,halo:false});
+    dimensions.forEach((d,k)=>{
+      const y=top+(k+.5)*rh,barHeight=Math.min(22,rh-9),w=right-left;
+      board.text('power-'+k,'k='+k,left-9,y+4,{size:12,anchor:'end',color:P.muted,halo:false});
+      board.rect('capacity-'+k,left,y-barHeight/2,w,barHeight,P.faint,{opacity:.55,rx:3});
+      if(d)board.rect('dimension-'+k,left,y-barHeight/2,w*d/ambientDimension,barHeight,P[color],{opacity:.72,rx:3});
+      for(let j=1;j<ambientDimension;j++)board.line(`unit-${k}-${j}`,left+w*j/ambientDimension,y-barHeight/2,left+w*j/ambientDimension,y+barHeight/2,P.paper,1,.7);
+      board.text('dimension-value-'+k,String(d),right+12,y+4,{size:13,color:P[color],halo:false});
+      board.text('remaining-value-'+k,String(ambientDimension-d),right+39,y+4,{size:13,color:P.muted,halo:false});
+    });
+    const y=board.height-12,second=24+V.measure(filledLabel,12)+35;
+    if(second+V.measure(remainingLabel,12)+16>board.width-12)throw Error('Dimension legend needs more width');
+    board.rect('legend-filled',12,y-9,10,10,P[color],{opacity:.72,rx:2});board.text('legend-filled-label',filledLabel,27,y,{size:12,color:P[color],halo:false});
+    board.rect('legend-empty',second,y-9,10,10,P.faint,{opacity:.7,rx:2});board.text('legend-empty-label',remainingLabel,second+15,y,{size:12,color:P.muted,halo:false});
+    return {dimensions,ambientDimension,remaining:dimensions.map(d=>ambientDimension-d),convention:'Dimension-only nested bands. Equal slots represent counts, not constructed basis vectors, coordinates, angles or an independently verified subspace chain. The caller supplies actual mathematical dimensions and their meanings.'};
+  }
+  function coefficientStrip(board,{coefficients,title='',color='blue'}={}) {
+    if(!Array.isArray(coefficients)||coefficients.length<1||coefficients.length>13||!Object.hasOwn(P,color))throw Error('Use 1..13 exact coefficients and a palette color');short(title);
+    const n=coefficients.length,available=board.width-24,columns=Math.min(n,Math.floor(available/54)),rows=Math.ceil(n/columns),top=title?34:12,rh=(board.height-top-8)/rows,cw=available/columns;
+    if(columns<1||rh<65)throw Error('Coefficient strip needs at least 54×65px cells');
+    if(title)board.text('title',title,12,17,{size:13,halo:false});
+    const normalized=A.coefficientLiterals(coefficients);
+    normalized.values.forEach((value,i)=>{
+      const x=12+(i%columns)*cw,y=top+Math.floor(i/columns)*rh;
+      board.rect('cell-'+i,x+2,y+1,cw-4,rh-4,P[color],{opacity:String(value)==='0'?.04:.12,rx:5});
+      fraction(board,'value-'+i,value,x+cw/2,y+rh*.36,{size:15,color:String(value)==='0'?P.muted:P[color],maxWidth:cw-10});
+      board.text('power-'+i,i===0?'1':i===1?'x':'x'+superscript(i),x+cw/2,y+rh-13,{size:12,anchor:'middle',color:P.muted,halo:false});
+    });
+    return {coefficients:normalized.values,degree:normalized.degree,convention:'Coefficient identities, lowest power first; this strip does not find roots or establish irreducibility.'};
+  }
+  function quotientPlane(board,{direction=[1,1],vector=[2,1],progress=1,xDomain=[-3,4],yDomain=[-3,4],coordinateScale=1,coordinateLabel='商空间坐标',title=''}={}) {
+    pair(direction);pair(vector);short(title);if(!Number.isFinite(progress)||progress<0||progress>1)throw Error('Coset motion progress 0..1');
+    short(coordinateLabel,16);if(!Number.isFinite(coordinateScale)||coordinateScale<=0)throw Error('Positive finite coordinate scale required');
+    const length=Math.hypot(...direction);if(length<1e-10)throw Error('Nonzero quotient direction required');
+    const u=direction.map(x=>x/length),normal=[-u[1],u[0]],coordinate=dot(vector,normal),representative=normal.map(x=>x*coordinate),current=vector.map((x,i)=>x+(representative[i]-x)*progress);
+    const f=V.plotFrame(board,'axes',{title:title||null,xDomain,yDomain,equalUnits:true,grid:false,footerHeight:26});
+    const extent=4*Math.max(...xDomain.map(Math.abs),...yDomain.map(Math.abs));
+    for(let k=-3;k<=3;k++)clippedCurve(board,'coset-'+k,f,[[normal[0]*k-u[0]*extent,normal[1]*k-u[1]*extent],[normal[0]*k+u[0]*extent,normal[1]*k+u[1]*extent]],{color:k===0?P.violet:P.faint,width:k===0?2:1});
+    clippedCurve(board,'selected-coset',f,[[representative[0]-u[0]*extent,representative[1]-u[1]*extent],[representative[0]+u[0]*extent,representative[1]+u[1]*extent]],{color:P.orange,width:2});
+    clippedCurve(board,'representative-axis',f,[normal.map(x=>x*-extent),normal.map(x=>x*extent)],{color:P.blue,width:1.5,opacity:.6});
+    board.circle('original',f.x(vector[0]),f.y(vector[1]),4,P.muted);
+    board.circle('representative',f.x(representative[0]),f.y(representative[1]),5,P.blue);
+    board.mark('moving-ring','circle',{cx:f.x(current[0]),cy:f.y(current[1]),r:8,fill:'none',stroke:P.orange,'stroke-width':2});
+    if(Math.hypot(current[0]-representative[0],current[1]-representative[1])>1e-8)board.circle('moving-center',f.x(current[0]),f.y(current[1]),4,P.orange);
+    board.label('quotient-coordinate',coordinateLabel+' '+V.formatNumber(coordinate*coordinateScale),board.width/2,board.height-10,{size:13,anchor:'middle',maxWidth:board.width-24,avoid:false});
+    return {direction,vector,coordinate,displayCoordinate:coordinate*coordinateScale,coordinateScale,coordinateLabel,representative,current,convention:'R²/span(direction); parallel lines are equivalence classes. Orthogonal representatives are a chosen Euclidean model, not intrinsic to every quotient space. Progress moves within one class and leaves its quotient coordinate unchanged.'};
+  }
+  function complexPlane(board,{points,labels=null,reflect=false,progress=1,xDomain=[-3,3],yDomain=[-3,3],title=''}={}) {
+    if(!Array.isArray(points)||points.length<1||points.length>6) throw Error('Use1..6 complex component points');
+    points.forEach(pair);short(title);
+    if(typeof reflect!=='boolean'||!Number.isFinite(progress)||progress<0||progress>1) throw Error('Explicit reflection flag and progress0..1 required');
+    const names=labels??points.map((_,i)=>'z'+subscript(i+1));
+    if(!Array.isArray(names)||names.length!==points.length)throw Error('One label per complex component required');names.forEach(s=>short(s,12));
+    const transformed=points.map(([re,im])=>[re,reflect?im*(1-2*progress):im]);
+    for(const [re,im] of [...points,...transformed])if(re<xDomain[0]||re>xDomain[1]||im<yDomain[0]||im>yDomain[1])throw Error('Complex component outside drawing domains');
+    const f=V.plotFrame(board,'axes',{title:title||null,xDomain,yDomain,equalUnits:true,grid:false,footerHeight:30,headerHeight:16});
+    board.text('real-axis-label','Re',f.right,f.bottom+50,{size:12,anchor:'end',color:P.muted,halo:false});
+    board.text('imaginary-axis-label','Im',f.left,f.top-12,{size:12,color:P.muted,halo:false});
+    const colors=[P.blue,P.orange,P.violet,P.green,P.gold,P.muted];
+    points.forEach((p,i)=>{
+      const q=transformed[i],color=colors[i];
+      if(reflect&&p[1]!==0){
+        board.curve('reflection-guide-'+i,f,[[p[0],Math.abs(p[1])],[p[0],-Math.abs(p[1])]],{color,width:1,opacity:.24});
+        board.mark('original-'+i,'circle',{cx:f.x(p[0]),cy:f.y(p[1]),r:5,fill:'none',stroke:color,'stroke-width':1.4,opacity:.55});
+      }
+      board.circle('point-'+i,f.x(q[0]),f.y(q[1]),5,color);
+      board.label('point-label-'+i,names[i],f.x(q[0])+9,f.y(q[1])-9,{size:13,color,maxWidth:64});
+    });
+    return {points,transformed,reflect,progress,convention:'Each labelled point is one complex scalar component on the real/imaginary plane. Reflection endpoint is conjugation; intermediate points are a continuous real-coordinate illustration, not complex-linear or unitary operators. Equal units on both axes; no representation of C^n as an intrinsic real2D space.'};
+  }
+  function columnShear(board,{input=[[1,2],[2,5]],multiple=2,xDomain=null,yDomain=null,title=''}={}) {
+    if(!Array.isArray(input)||input.length!==2||input.some(row=>!Array.isArray(row)||row.length!==2)||!Number.isFinite(multiple)) throw Error('Column shear needs a2x2 rational-coefficient matrix and finite multiplier');
+    short(title,24);
+    const transform=[[1,-multiple],[0,1]],
+      product=global.VisualBookCalculations.compute('exact-matrix-product',{a:input,b:transform}).result,
+      transformed=product.output,transformedExact=product.outputExact,
+      before=A.determinantExpansion({input}),after=A.determinantExpansion({input:transformedExact}),
+      u=[product.a[0][0],product.a[1][0]],v=[product.a[0][1],product.a[1][1]],r=[transformed[0][1],transformed[1][1]],
+      polygon=[[0,0],u,u.map((x,i)=>x+r[i]),r,[0,0]],points=[...polygon,v];
+    const domain=i=>{const values=points.map(p=>p[i]),lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(1,hi-lo)*.18;return [lo-pad,hi+pad];};
+    const f=V.plotFrame(board,'axes',{title:title||null,xDomain:xDomain??domain(0),yDomain:yDomain??domain(1),equalUnits:true,grid:true,footerHeight:78,headerHeight:24});
+    board.path('area',polygon.map(p=>[f.x(p[0]),f.y(p[1])]),{color:P.blue,closed:true,width:0,opacity:.2});
+    board.curve('outline',f,polygon,{color:P.blue,width:1.6,opacity:.7});
+    if(Math.hypot(v[0]-r[0],v[1]-r[1])>1e-12) {
+      board.curve('original-second',f,[[0,0],v],{color:P.muted,width:1.2,opacity:.4});
+      board.mark('original-end','circle',{cx:f.x(v[0]),cy:f.y(v[1]),r:4,fill:'none',stroke:P.muted,'stroke-width':1.2,opacity:.6});
+    }
+    if(Math.hypot(...u)>0)board.vector('retained',f,[0,0],u,{color:P.blue,label:'α₁'});
+    if(Math.hypot(...r)>0)board.vector('residual',f,[0,0],r,{color:P.orange,label:'r'});
+    else board.circle('zero-residual',f.x(0),f.y(0),4,P.orange);
+    const fmt=V.formatNumber,expression='r = α₂ − ('+fmt(multiple)+')α₁',value='('+r.map(x=>fmt(x)).join(', ')+')',area='面积 '+fmt(Math.abs(after.determinant));
+    board.label('operation',expression,board.width/2,board.height-55,{size:13,anchor:'middle',maxWidth:board.width-24,avoid:false,color:P.orange});
+    board.label('result',value+' · '+area,board.width/2,board.height-33,{size:14,anchor:'middle',maxWidth:board.width-24,avoid:false});
+    const residualLength=Math.hypot(...r),residualPixelLength=Math.hypot(f.x(r[0])-f.x(0),f.y(r[1])-f.y(0));
+    let directionDetail=null;
+    if(residualLength>0&&residualPixelLength<14) {
+      const direction=r.map(x=>x/residualLength),text='小箭头只示r方向（非零）',width=36+V.measure(text,12),left=(board.width-width)/2;
+      if(width>board.width-24)throw Error('Direction detail needs more drawing width');
+      board.vector('direction-detail',{x:x=>left+14+12*x,y:y=>board.height-15-12*y},[0,0],direction,{color:P.orange});
+      board.text('direction-detail-label',text,left+36,board.height-11,{size:12,color:P.orange,halo:false});
+      directionDetail={normalizedDirection:direction,displayLengthPx:12,lengthNotComparable:true};
+    } else board.label('original-legend','淡线：原α₂；蓝色：变换后面积',board.width/2,board.height-11,{size:12,anchor:'middle',maxWidth:board.width-24,avoid:false,color:P.muted});
+    return {input,transform,transformed,transformedExact,originalColumns:[u,v],retainedColumn:u,residualColumn:r,polygon,multiple,beforeDeterminant:before.determinant,beforeDeterminantExact:before.determinantExact,afterDeterminant:after.determinant,afterDeterminantExact:after.determinantExact,area:Math.abs(after.determinant),residualPixelLength,directionDetail,convention:'Real2D column shear c2<-c2-multiple*c1. Equal x/y units; original second column is a pale guide. Determinant stays fixed; r is a shear residual, not an orthogonal projection. Coordinates and display labels computed from supplied matrices. A nonzero residual shorter than14px gets a separate normalized12px direction icon explicitly unsuitable for length/area comparison.'};
+  }
+  Object.assign(V.components,{'column-shear':columnShear,'exact-matrix':exactMatrix,'basis-frame':basisFrame,'residue-grid':residueGrid,'jordan-chains':jordanChains,'dimension-filtration':dimensionFiltration,'coefficient-strip':coefficientStrip,'quotient-plane':quotientPlane,'complex-plane':complexPlane});
+})(window);

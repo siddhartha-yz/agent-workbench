@@ -1,0 +1,38 @@
+# Architecture direction
+
+The product definition, constraints, testable hypotheses and evidence limits are in [positioning.md](positioning.md).
+
+The intended control loop is: audience / question / takeaway → mechanism contract → teaching plan → candidate → local render → numerical evidence and viewer reconstruction → targeted revision → retained version. This complete visual evaluation-to-revision loop is not yet implemented as a general executable workflow. The latest pilot uses one fixed self-check or deterministic-feedback revision followed by an independent final comparison; that final comparison does not drive another edit. The experimental explanation profile saves the plan before generating code. Older baseline runs generated source and a short storyboard together.
+
+The author can be the current Codex desktop session or the official CLI. The renderer and validator are ordinary local programs. This makes the loop usable with subscription authentication and gives a stable boundary for later API providers.
+
+## Current executable boundary
+
+The current narrow runtime is `runtime/concept-runtime.mjs`: reusable objects, deterministic poses, camera/layers and registered action intervals. The warm `studio.mjs` host freezes each job and supports continuous local video or sampled frames. `retime.py` edits registered intervals in a new `timing.json` while leaving drawing source intact. `iterate.py` currently coordinates the ten-second symmetry benchmark, exact source patches, one measured-defect recovery and cached successful stages. It is not a general mathematical or aesthetic validator.
+
+The [first paired test](../evaluation/2026-10-02/infra-pair-v1/REPORT.md) did not show a model-generation or end-to-end speed advantage over direct prompting. [Parameter-only retiming](../evaluation/2026-10-02/timing-bindings-v1/REPORT.md) was then tested after an explicit source adaptation. It established fast local retiming and injected-invalid-configuration rollback, not better artwork or autonomous visual judgement. Stable action boundaries are useful to an AI author because changes can become data operations; visual design still needs evidence before expanding the runtime.
+
+## Four boundaries
+
+1. **Mechanism**: numerical state and invariants, separate from visual styling. Softmax shares a denominator; residual paths preserve identity; GRU gating combines old and candidate state according to an explicitly named convention.
+2. **Scene**: stable object identities, time in seconds, camera and transition intent. Begin with renderer-specific source plus a portable brief; a universal DSL is deferred.
+3. **Evidence**: exact input, source hash, renderer/dependency versions, failures, frames, mathematical checks and review verdict. Review can request a local revision rather than regenerate the full scene.
+4. **Execution**: Codex authoring and review, deterministic render tools, bounded revision budgets and checkpointed artifacts. Generated code runs within the selected workspace sandbox. A static AST blacklist plus process resource limits is not a complete isolation boundary.
+
+## Reference adoption hypotheses
+
+| Reference | Potential reuse | Evidence needed before adoption |
+|---|---|---|
+| Paper2Manim | Per-scene repair, error classification, sampled visual review, successful/failed episodes | Actual generations with visual review and an ablation without review; license provenance before vendoring |
+| OpenMotion | Editable component specs, project snapshots, standalone HTML, reusable motion presets | Runtime edit/restore checks, export timing and layouts suitable for mechanisms |
+| Existing Three.js study | Deterministic frame-time rendering and network visual primitives | Extract after API and benchmark needs stabilize; keep original work separate |
+
+Neither reference is selected as the foundation yet. Offline tests are useful for feasibility but cannot decide artistic quality.
+
+## Evaluation protocol
+
+Use the same case and constraints for each capable candidate; record an unsupported case explicitly. Older baseline runs used Softmax/residual with two technical and two visual revisions. The current short symmetry comparison uses the narrower budgets in [infra-benchmark.md](infra-benchmark.md). Do not mix their different contracts, model overrides or acceptance criteria into one success rate. Small samples are exploratory.
+
+Record separately: first render success, final render success, invariant failures, clipping/overlap, mechanism readability, continuity and pacing, revision count, human interventions, wall time, model usage and local rendering time. Preserve failed attempts. Visual verdicts should describe evidence at timestamps; a rubric score alone is insufficient.
+
+Human feedback on the first six videos exposed missing exposition despite model review passes. Add a viewer-facing question, object definitions and causal captions before treating a scene as an explainer. See [communication.md](communication.md) for the pinned visual reference and blind reconstruction profile. Mathematical validity and model reconstruction are separate from human understanding and artistic acceptance.

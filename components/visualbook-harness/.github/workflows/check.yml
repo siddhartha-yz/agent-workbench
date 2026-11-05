@@ -1,0 +1,166 @@
+name: mechanism-contracts
+on: [push, pull_request]
+jobs:
+  visualbook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: experiments/visualbook/package-lock.json
+      - run: python3 experiments/visualbook/bootstrap.py --fetch
+      - name: Install browser for offline reading checks
+        run: |
+          npm exec --prefix work/visualbook/runtime -- playwright-core install --with-deps chromium
+          sudo apt-get install --no-install-recommends -y fonts-noto-cjk ffmpeg
+          dpkg-query -W fonts-noto-cjk
+          node --input-type=module -e "import {chromium} from './work/visualbook/runtime/node_modules/playwright-core/index.mjs'; console.log('CHROMIUM_PATH='+chromium.executablePath())" >> "$GITHUB_ENV"
+      - name: Verify frozen books without model calls
+        run: python3 experiments/visualbook/check-frozen.py
+      - name: Verify reusable tools and ordinary Markdown import
+        run: |
+          node --test tests/visualbook-*.test.mjs
+          node tools/check_visualbook.mjs work/visualbook/ci-tools
+          node tools/check_visualbook_controls.mjs work/visualbook/ci-reader-controls
+          node tools/check_visualbook_composition.mjs work/visualbook/ci-composition
+          node tools/check_visualbook_domain.mjs work/visualbook/ci-domain
+          node tools/check_visualbook_math_reader.mjs work/visualbook/ci-math-reader
+          node tools/check_visualbook_modes.mjs work/visualbook/ci-modes
+          node tools/check_visualbook_choices.mjs work/visualbook/ci-choices
+          node tools/check_visualbook_recipes.mjs work/visualbook/ci-recipes
+          python3 tools/check_visualbook_build_state.py work/visualbook/ci-build-state
+          python3 tools/check_visualbook_design_protocol.py work/visualbook/ci-design-protocol
+          python3 tools/check_visualbook_source_policy.py work/visualbook/ci-source-policy
+          python3 tools/check_visualbook_preparation.py work/visualbook/ci-preparation
+          node tools/check_visualbook_source_capture.mjs work/visualbook/ci-source-capture
+          node tools/check_visualbook_reading.mjs work/visualbook/ci-reading
+          node tools/check_visualbook_cases.mjs work/visualbook/ci-cases
+          python3 tools/check_visualbook_partition.py work/visualbook/ci-partition
+          python3 tools/check_visualbook_reader_protocol.py work/visualbook/ci-reader-protocol
+          node tools/check_visualbook_rebuild.mjs work/visualbook/ci-rebuild
+          node tools/check_visualbook_assembly.mjs work/visualbook/ci-assembly
+          node tools/check_visualbook_batch_sweep.mjs work/visualbook/ci-batch-sweep
+          node tools/check_visualbook_auto_spacing.mjs work/visualbook/ci-auto-spacing
+          node tools/check_visualbook_aligned_inputs.mjs work/visualbook/ci-aligned-inputs
+          node tools/check_visualbook_generalized.mjs work/visualbook/ci-generalized-kernels
+          node tools/check_visualbook_failures.mjs work/visualbook/ci-failures
+          node tools/check_visualbook_program_controls.mjs work/visualbook/ci-program-controls
+          node tools/check_visualbook_spatial_controls.mjs work/visualbook/ci-spatial-controls
+          node tools/check_visualbook_interactions.mjs work/visualbook/ci-interactions
+          node tools/check_visualbook_motion.mjs work/visualbook/ci-motion
+          python3 tools/check_visualbook_motion_protocol.py work/visualbook/ci-motion-protocol
+          node tools/build_visualbook_catalog.mjs work/visualbook/ci-designs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visualbook-engineering-evidence
+          path: |
+            work/visualbook/frozen-checks/*/math
+            work/visualbook/frozen-checks/*/relations
+            work/visualbook/frozen-checks/*/reading
+            work/visualbook/ci-tools
+            work/visualbook/ci-reader-controls
+            work/visualbook/ci-composition
+            work/visualbook/ci-domain
+            work/visualbook/ci-math-reader
+            work/visualbook/ci-modes
+            work/visualbook/ci-choices
+            work/visualbook/ci-recipes
+            work/visualbook/ci-build-state
+            work/visualbook/ci-design-protocol
+            work/visualbook/ci-preparation
+            work/visualbook/ci-source-capture
+            work/visualbook/ci-reading
+            work/visualbook/ci-cases
+            work/visualbook/ci-partition
+            work/visualbook/ci-reader-protocol
+            work/visualbook/ci-rebuild
+            work/visualbook/ci-assembly
+            work/visualbook/ci-batch-sweep
+            work/visualbook/ci-auto-spacing
+            work/visualbook/ci-aligned-inputs
+            work/visualbook/ci-generalized-kernels
+            work/visualbook/ci-failures
+            work/visualbook/ci-program-controls
+            work/visualbook/ci-spatial-controls
+            work/visualbook/ci-interactions
+            work/visualbook/ci-motion
+            work/visualbook/ci-motion-protocol
+            work/visualbook/ci-designs
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: python tools/bench.py check
+      - run: python tools/bench.py prepare softmax --out /tmp/softmax-brief
+      - run: python -m compileall -q tools
+      - name: Install pinned import and rendering dependencies without generating books
+        run: python3 tools/setup_visualbook.py --install
+      - run: npm test
+      - run: python -m unittest discover -s tests -p 'test_*.py'
+  scene-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tools/studio_smoke.mjs /tmp/timing-studio-smoke
+      - run: node tools/render_scene.mjs --scene benchmarks/scenes/softmax/index.html --out /tmp/softmax-scene-smoke --checks-only --author CI
+      - run: node tools/render_scene.mjs --scene benchmarks/scenes/residual/index.html --out /tmp/residual-scene-smoke --checks-only --author CI
+      - name: Known overlapping candidate must be rejected
+        continue-on-error: true
+        run: node tools/render_scene.mjs --scene evaluation/2026-10-01/softmax-loop/v1-source/index.html --out /tmp/softmax-regression --checks-only --author CI
+      - name: Verify the rejection evidence
+        run: node -e "const c=require('/tmp/softmax-regression/checks.json'); if(c.passed || !c.findings.some(f=>f.code==='text_overlap')) process.exit(1)"
+      - name: Known shape-caption collision must be rejected
+        continue-on-error: true
+        run: node tools/render_scene.mjs --scene evaluation/2026-10-01/residual-loop/v1-source/index.html --out /tmp/residual-caption-regression --checks-only --author CI
+      - name: Verify shape-caption rejection
+        run: node -e "const c=require('/tmp/residual-caption-regression/checks.json'); if(c.passed || !c.findings.some(f=>f.code==='text_shape_overlap')) process.exit(1)"
+      - name: Previous Softmax caption collision must be rejected
+        continue-on-error: true
+        run: node tools/render_scene.mjs --scene evaluation/2026-10-01/residual-loop/softmax-before/index.html --out /tmp/softmax-caption-regression --checks-only --author CI
+      - name: Verify Softmax caption rejection
+        run: node -e "const c=require('/tmp/softmax-caption-regression/checks.json'); if(c.passed || !c.findings.some(f=>f.code==='text_shape_overlap' && f.detail==='division / class-2')) process.exit(1)"
+      - name: Prepare intentional pixel corruption
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          fs.cpSync('benchmarks/scenes/residual','/tmp/residual-corrupted-source',{recursive:true});
+          fs.appendFileSync('/tmp/residual-corrupted-source/scene.js', '\n'+fs.readFileSync('tests/fixtures/residual-pixel-overwrite.js','utf8'));
+          JS
+      - name: Correct evidence with corrupted pixels must be rejected
+        continue-on-error: true
+        run: node tools/render_scene.mjs --scene /tmp/residual-corrupted-source/index.html --out /tmp/residual-pixel-regression --checks-only --author CI-injected-fault
+      - name: Verify actual pixel rejection
+        run: node -e "const c=require('/tmp/residual-pixel-regression/checks.json'); if(c.passed || !c.findings.some(f=>f.code==='pixel_mismatch') || c.findings.some(f=>f.code!=='pixel_mismatch')) process.exit(1)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mechanism-scene-evidence
+          path: |
+            /tmp/softmax-scene-smoke
+            /tmp/softmax-regression
+            /tmp/residual-scene-smoke
+            /tmp/residual-pixel-regression
+            /tmp/residual-caption-regression
+            /tmp/softmax-caption-regression
+            /tmp/timing-studio-smoke

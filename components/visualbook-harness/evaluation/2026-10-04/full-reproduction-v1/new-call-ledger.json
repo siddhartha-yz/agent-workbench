@@ -1,0 +1,547 @@
+{
+  "budget": 96,
+  "attempts": [
+    {
+      "id": "screen-tea-B8",
+      "prompt_sha256": "4b3764e8ebae3bde7a536a23fa6f74eb641b8b7199fc932f3b9fa7ad48e97af9",
+      "image_sha256": [
+        "37b74aa932cb0b05d2979ded0f56925ad2501bb5a255a2810d4236914ad5137c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-B8-r1",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "b8a8d1694609a55d8567b716d988bb0a5f2bdd930100ffa800c182ba7c2078c7"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-B8-r2",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "b8a8d1694609a55d8567b716d988bb0a5f2bdd930100ffa800c182ba7c2078c7"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-B8",
+      "prompt_sha256": "0ab7c274d9bd9c4db3c85ce234744733016af29d608f58c26b9e3a2efe1a3608",
+      "image_sha256": [
+        "b8a8d1694609a55d8567b716d988bb0a5f2bdd930100ffa800c182ba7c2078c7"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-D3-r1",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "6c7165d3e47ab657d50ac33da2884070742685a773692ae8b3528326bbba31ad"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-D3-r2",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "6c7165d3e47ab657d50ac33da2884070742685a773692ae8b3528326bbba31ad"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-D3",
+      "prompt_sha256": "4b3764e8ebae3bde7a536a23fa6f74eb641b8b7199fc932f3b9fa7ad48e97af9",
+      "image_sha256": [
+        "37b74aa932cb0b05d2979ded0f56925ad2501bb5a255a2810d4236914ad5137c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-D3",
+      "prompt_sha256": "0ab7c274d9bd9c4db3c85ce234744733016af29d608f58c26b9e3a2efe1a3608",
+      "image_sha256": [
+        "6c7165d3e47ab657d50ac33da2884070742685a773692ae8b3528326bbba31ad"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-K6-r1",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "d25c0cf73ea2f0992091cb732959fdae896498f8a9d043dc11ff4860f196fc8c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-K6-r2",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "d25c0cf73ea2f0992091cb732959fdae896498f8a9d043dc11ff4860f196fc8c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-K6",
+      "prompt_sha256": "4b3764e8ebae3bde7a536a23fa6f74eb641b8b7199fc932f3b9fa7ad48e97af9",
+      "image_sha256": [
+        "37b74aa932cb0b05d2979ded0f56925ad2501bb5a255a2810d4236914ad5137c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-K6",
+      "prompt_sha256": "0ab7c274d9bd9c4db3c85ce234744733016af29d608f58c26b9e3a2efe1a3608",
+      "image_sha256": [
+        "d25c0cf73ea2f0992091cb732959fdae896498f8a9d043dc11ff4860f196fc8c"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-M1-r1",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "86092249b2891809431d57c4be1982f819d602c1d360c7af45da8aaedf001627"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-M1-r2",
+      "prompt_sha256": "a47679a4573d0ee0118f524f66158725257818204f678e6fa7986299c97efec4",
+      "image_sha256": [
+        "86092249b2891809431d57c4be1982f819d602c1d360c7af45da8aaedf001627"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-M1",
+      "prompt_sha256": "4b3764e8ebae3bde7a536a23fa6f74eb641b8b7199fc932f3b9fa7ad48e97af9",
+      "image_sha256": [
+        "d077de2f749a4508eaaeea2e463fd5558fbfde26d510611e27d9e56953dae594"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-M1",
+      "prompt_sha256": "0ab7c274d9bd9c4db3c85ce234744733016af29d608f58c26b9e3a2efe1a3608",
+      "image_sha256": [
+        "86092249b2891809431d57c4be1982f819d602c1d360c7af45da8aaedf001627"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-P5-r1",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "8947bde55f1e38aedd754ad5a20379d01c63dfeabbad56c39533dbdc6a314d84"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-P5-r2",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "8947bde55f1e38aedd754ad5a20379d01c63dfeabbad56c39533dbdc6a314d84"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-P5",
+      "prompt_sha256": "ce0ac18b5332a1152ec838f11a1054cfd2309eff3b3affee460ec80941b9b7ed",
+      "image_sha256": [
+        "570e69978bb73e6ef0200b11f1af72980f55f0b913c044212ca5d53233fe6974"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-P5",
+      "prompt_sha256": "28af36e71a258d319c026f493161667fcaaa5a0b4d59532ac86f15a17dff3da9",
+      "image_sha256": [
+        "8947bde55f1e38aedd754ad5a20379d01c63dfeabbad56c39533dbdc6a314d84"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-R8-r1",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "e6c600737c7749895d8c3879603afff62d6df0035bf63ddc56addaad36fb1411"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-R8-r2",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "e6c600737c7749895d8c3879603afff62d6df0035bf63ddc56addaad36fb1411"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-R8",
+      "prompt_sha256": "ce0ac18b5332a1152ec838f11a1054cfd2309eff3b3affee460ec80941b9b7ed",
+      "image_sha256": [
+        "996040295547e0e5a0ba1353d94d943eda8aabc942ca235a38e8fd44ef174bb3"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-R8",
+      "prompt_sha256": "28af36e71a258d319c026f493161667fcaaa5a0b4d59532ac86f15a17dff3da9",
+      "image_sha256": [
+        "e6c600737c7749895d8c3879603afff62d6df0035bf63ddc56addaad36fb1411"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-S3-r1",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "771563e0b08984f34c5cb066cc2ac375acc1e9c668c24c62014547fe178e5d01"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-S3-r2",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "771563e0b08984f34c5cb066cc2ac375acc1e9c668c24c62014547fe178e5d01"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-S3",
+      "prompt_sha256": "ce0ac18b5332a1152ec838f11a1054cfd2309eff3b3affee460ec80941b9b7ed",
+      "image_sha256": [
+        "570e69978bb73e6ef0200b11f1af72980f55f0b913c044212ca5d53233fe6974"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-S3",
+      "prompt_sha256": "28af36e71a258d319c026f493161667fcaaa5a0b4d59532ac86f15a17dff3da9",
+      "image_sha256": [
+        "771563e0b08984f34c5cb066cc2ac375acc1e9c668c24c62014547fe178e5d01"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-V6-r1",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "d62b5fb959c791842d7fd16fce86cffd1ce6eb12db46b303cb78cc0fe613cf44"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-fact-V6-r2",
+      "prompt_sha256": "1c7cc1491353498d5f3bbf656cdc2a24e7805b6019344c0888dfbbb50316593b",
+      "image_sha256": [
+        "d62b5fb959c791842d7fd16fce86cffd1ce6eb12db46b303cb78cc0fe613cf44"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-tea-V6",
+      "prompt_sha256": "ce0ac18b5332a1152ec838f11a1054cfd2309eff3b3affee460ec80941b9b7ed",
+      "image_sha256": [
+        "570e69978bb73e6ef0200b11f1af72980f55f0b913c044212ca5d53233fe6974"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "screen-aes-V6",
+      "prompt_sha256": "28af36e71a258d319c026f493161667fcaaa5a0b4d59532ac86f15a17dff3da9",
+      "image_sha256": [
+        "d62b5fb959c791842d7fd16fce86cffd1ce6eb12db46b303cb78cc0fe613cf44"
+      ],
+      "model": "gpt-6-astra",
+      "status": "unknown"
+    },
+    {
+      "id": "native-coordinate-author-v1",
+      "prompt_sha256": "24bf11cac8b7cdf95c480bf08dd7de64716ccfb0a44822d0187566edde7c70a4",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "native-coordinate-evidence-review-v1",
+      "prompt_sha256": "1154c7a7cb87c15dd1f2490bd46daba2e33d9a675f5aae977b992a6087922b17",
+      "image_sha256": [
+        "3634643a46f69a20314f71f17b9b829112754903cd18a5f41c9d9559f530a22f"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "native-coordinate-local-patch-v1",
+      "prompt_sha256": "323024571355151ed683725c9e29abb4ecaac0c1cc940a4c3ded5705ffeb174d",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-baseline-q1-v1",
+      "prompt_sha256": "1215d410c68b08f8a4e0287c93a2f9a08609858526fca4c02eb2ec975415d395",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-baseline-q2-v1",
+      "prompt_sha256": "d88fa25d9e7925a993b7967b6b3329d5984d54b5773258becc9e703931b4b0c0",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-baseline-q3-v1",
+      "prompt_sha256": "313cb9c9695bb731e695e223bd429400de5b5ee3e6f1955af143b5f7051b6e9e",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-baseline-q4-v1",
+      "prompt_sha256": "e19e69d586366e21b2e6796db4f00cafe2b12d0dd0c0db7c5df1c080d4a574b2",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-baseline-q5-v1",
+      "prompt_sha256": "60cccf410f248e76830904bf0c8a8c410477d9f463457d6fb7b4603c313e6a1c",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_unlearning-q1-v1",
+      "prompt_sha256": "7a3b5977a6608dbc5ddf716bdea44d8cbfda5d0351dd9893a00ad40cfdc37226",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_unlearning-q2-v1",
+      "prompt_sha256": "82a6ca3a7c2b0af3ea8f10b6d1b6d0f228386c84b08d4e1376c28efc41516661",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_unlearning-q3-v1",
+      "prompt_sha256": "5e814f0a0b15bbda57d28ac63e8bb1c055ed0bb3d578d90be69c21d22e9e5dfb",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_unlearning-q4-v1",
+      "prompt_sha256": "b89d8b4846e565e01356670145d5ac99bbf5b6709220c183b819b821ef16a177",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_unlearning-q5-v1",
+      "prompt_sha256": "fd51685f5aaad6e37ffabfb31b4b94a96f963257ab71c457ce147327be9b5d9c",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q1-v1",
+      "prompt_sha256": "e3e9bf5f7eda561d59fb75fbbde0f99a1ff5d6c4eb5b9db3ef36f3afdad9d3a6",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q2-v1",
+      "prompt_sha256": "b5c21ea10af1792cfef5447218714344712805f5347110939f50581a4dea65d1",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "unknown"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q3-v1",
+      "prompt_sha256": "f36b076f4accf80519df39fa179c551284977be127d8bd78ac4d64baef45d573",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "unknown"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q4-v1",
+      "prompt_sha256": "ae9de312c66c48373226b0fed18ee811ff68b108f76c20e1baa3b7c487a9964d",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "unknown"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q2-completion-v1",
+      "prompt_sha256": "b5c21ea10af1792cfef5447218714344712805f5347110939f50581a4dea65d1",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q3-completion-v1",
+      "prompt_sha256": "f36b076f4accf80519df39fa179c551284977be127d8bd78ac4d64baef45d573",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q4-completion-v1",
+      "prompt_sha256": "ae9de312c66c48373226b0fed18ee811ff68b108f76c20e1baa3b7c487a9964d",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "teachquiz-lintrans-post_video-q5-completion-v1",
+      "prompt_sha256": "9236f19e74fa3315f6530e3682f939b51fb108f85f6c9d6ef9fc194a3c8a559f",
+      "image_sha256": [
+        "9e3e7dd10e063fd0a4c5a78227b699aadd70973ff23afb5780c73442ae900d36",
+        "1bca6c7ad3450515c96c43f89f6404bb33dc90fb208245c69765d79a18414b42",
+        "544cb6d512a82e324870102c8520bd4391c2dd6ac5e2570da414212035521e0a",
+        "1cf964d24918b748ab384b221abeeec8aec0a859e3dd264d3d2e41695531c8f2",
+        "78b6f957d86eaf6b33ed40ea1645a9444707d063a3b874523fcdaaddf91ec013",
+        "56bf5458630b78b06c47be90c1ff4625ed4f3892009fcd27ae3a55b5e352cf4b"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "manimator-determinant-generation-01-v1",
+      "prompt_sha256": "6beaf2e9bd78a9d4290076cc0bb3c15181567cbca12c9c15166af0308489b801",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "manimator-determinant-generation-02-v1",
+      "prompt_sha256": "adc20beb3620e1140587355b6c3e8f0afe0748afd2229613be092221d73abadc",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "manimator-determinant-frame-review-v1",
+      "prompt_sha256": "f3bdcd105e68d9199505e2a4da8eecacb5aa753d07fca74ffa2d4c1e697bf296",
+      "image_sha256": [
+        "1abf1cb4c6cc3e4520ffddca6b206a8b6489c9dfccb22de822758b4845828664",
+        "44a3403b80914dbc570fc912bc794044f7d425be3f8685d0b79c91aff70bd2a2",
+        "62f33688667e563b3cc500d808b1f1fcfaac4465b4083b4860fe64f470a89c9a",
+        "91be05fdcc3aa0042bdf4d0e5beff4b7b562527dc4bc35d005a386fe8043098a",
+        "da29ab63e2b18f67c1637d315dc75893db4364eb1c0dd6e31a2636b3e6a39f2e",
+        "ca39f884cd2e3d9ba250019bcf366cb9d8c6848315b4a0625ca2968f3c444571"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "manimator-determinant-local-revision-v1",
+      "prompt_sha256": "83588c1a36b8e637dfee41479d6694c1c01c635fbac1b8c43c99cbf98e692fad",
+      "image_sha256": [],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    },
+    {
+      "id": "manimator-determinant-revised-frame-review-v2",
+      "prompt_sha256": "c7dfebc1418bdd1bda9792e46ce5a9b953a227d9a936eb28a2285fbde0e9dbdb",
+      "image_sha256": [
+        "1773dff6e2119d28a38b52515fbc65fbab73329be3d7925108596ecd967c28c7",
+        "e0419b0f539c8ad5f3916741f5501318ebee6c078af4fae8fbad43b6eb234ae7",
+        "2eaa03e3391f7719ddcd6de8f08d1499eaf582832a2ae270e072eeb1d625dcd5",
+        "c267ea90356d65970d046ee7cc1f7d6d6e4b51b88fc4834023f94a144ed3feb4",
+        "cd6d500a5d9ab404c0cd08530e03785d171f161fab27ec0e1a84960d18c9b7ec",
+        "381fc38a8785245454fd990a948a1dedc9db79500d718370f2ee0627dc1e6edd"
+      ],
+      "model": "gpt-6-astra",
+      "status": "completed"
+    }
+  ]
+}
