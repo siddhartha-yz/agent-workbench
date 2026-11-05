@@ -59,7 +59,7 @@ def _fetch_once(store, task, url, attempt, allow_new=True):
     if not fresh:
         saved = store.source_record(row['id'])
         return {**saved,'cached':True}
-    headers = {'User-Agent':'LabCouncil/0.1 (https://github.com/siddhartha-yz/labcouncil)',
+    headers = {'User-Agent':'LabCouncil/0.1 (https://github.com/siddhartha-yz/agent-workbench)',
         'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2026-03-10'}
     http_status = None
     started = time.monotonic()

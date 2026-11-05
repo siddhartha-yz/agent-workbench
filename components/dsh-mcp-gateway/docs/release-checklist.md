@@ -4,6 +4,8 @@ This checklist follows the repository contract in [`../AGENTS.md`](../AGENTS.md)
 
 A checked item requires executable or recorded integration evidence; documentation alone is not enough.
 
+The original `v0.1.0` release below is historical and remains intact in the renamed Agent Workbench repository. Future component releases use `gateway-vMAJOR.MINOR.PATCH` tags, matching package/runtime versions and `docs/releases/vMAJOR.MINOR.PATCH.md` notes. Only the root `.github/workflows/gateway-release.yml` publishes gateway releases; editing a workflow or pushing `main` does not publish or overwrite a release.
+
 ## Proven Harness gates
 
 - [x] Stable `dsh_tool_catalog` + `dsh_tool_call` meta-tools discover and invoke the DSH-side external ChatGPT capability projection without bespoke Python wrappers or a refreshed MCP tool list; discovery and guessed-name execution share the same profile.

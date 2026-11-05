@@ -1,10 +1,22 @@
-name: CI
+name: Gateway CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "components/dsh-mcp-gateway/**"
+      - ".github/workflows/gateway-ci.yml"
+      - ".github/workflows/gateway-release.yml"
   pull_request:
+    paths:
+      - "components/dsh-mcp-gateway/**"
+      - ".github/workflows/gateway-ci.yml"
+      - ".github/workflows/gateway-release.yml"
   workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: components/dsh-mcp-gateway
 
 permissions:
   contents: read
@@ -24,7 +36,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: pyproject.toml
+          cache-dependency-path: components/dsh-mcp-gateway/pyproject.toml
 
       - name: Install test dependencies
         run: python -m pip install -e '.[dev]'
@@ -51,7 +63,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: pyproject.toml
+          cache-dependency-path: components/dsh-mcp-gateway/pyproject.toml
       - uses: actions/setup-node@v6
         with:
           node-version: "24.19.0"
@@ -123,8 +135,8 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: |
-            pyproject.toml
-            deploy/server-constraints.txt
+            components/dsh-mcp-gateway/pyproject.toml
+            components/dsh-mcp-gateway/deploy/server-constraints.txt
 
       - name: Verify deployment dependency locks
         run: |
@@ -158,11 +170,11 @@ jobs:
         run: python scripts/verify-dsh-runtime-lock.py
 
       - name: Install pinned DSH runtime
-        working-directory: deploy/dsh-runtime
+        working-directory: components/dsh-mcp-gateway/deploy/dsh-runtime
         run: npm ci --no-audit --no-fund
 
       - name: Verify installed DSH runtime
-        working-directory: deploy/dsh-runtime
+        working-directory: components/dsh-mcp-gateway/deploy/dsh-runtime
         run: |
           test "$(node_modules/.bin/dsh --version)" = "0.1.2-rc.1"
           node -e "Promise.all([import('@deepseek-ai/dsh-terminal'), import('@deepseek-ai/dsh-terminal-bash')])"
@@ -171,7 +183,7 @@ jobs:
           npm ls --depth=0
 
       - name: Verify Unix peer credential lookup
-        working-directory: deploy/dsh-runtime
+        working-directory: components/dsh-mcp-gateway/deploy/dsh-runtime
         run: |
           node --input-type=module <<'NODE'
           import { createServer, createConnection } from 'node:net'
@@ -194,7 +206,7 @@ jobs:
           NODE
 
       - name: Verify pinned Chromium launch
-        working-directory: deploy/dsh-runtime
+        working-directory: components/dsh-mcp-gateway/deploy/dsh-runtime
         run: |
           sudo node_modules/.bin/playwright-core install-deps chromium
           export PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/dsh-playwright-browsers"

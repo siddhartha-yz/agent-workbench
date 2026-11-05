@@ -1,5 +1,17 @@
-name: mechanism-contracts
-on: [push, pull_request]
+name: visualbook-mechanism-contracts
+on:
+  push:
+    paths:
+      - 'components/visualbook-harness/**'
+      - '.github/workflows/visualbook.yml'
+  pull_request:
+    paths:
+      - 'components/visualbook-harness/**'
+      - '.github/workflows/visualbook.yml'
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: components/visualbook-harness
 jobs:
   visualbook:
     runs-on: ubuntu-latest
@@ -13,7 +25,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: experiments/visualbook/package-lock.json
+          cache-dependency-path: components/visualbook-harness/experiments/visualbook/package-lock.json
       - run: python3 experiments/visualbook/bootstrap.py --fetch
       - name: Install browser for offline reading checks
         run: |
@@ -61,38 +73,38 @@ jobs:
         with:
           name: visualbook-engineering-evidence
           path: |
-            work/visualbook/frozen-checks/*/math
-            work/visualbook/frozen-checks/*/relations
-            work/visualbook/frozen-checks/*/reading
-            work/visualbook/ci-tools
-            work/visualbook/ci-reader-controls
-            work/visualbook/ci-composition
-            work/visualbook/ci-domain
-            work/visualbook/ci-math-reader
-            work/visualbook/ci-modes
-            work/visualbook/ci-choices
-            work/visualbook/ci-recipes
-            work/visualbook/ci-build-state
-            work/visualbook/ci-design-protocol
-            work/visualbook/ci-preparation
-            work/visualbook/ci-source-capture
-            work/visualbook/ci-reading
-            work/visualbook/ci-cases
-            work/visualbook/ci-partition
-            work/visualbook/ci-reader-protocol
-            work/visualbook/ci-rebuild
-            work/visualbook/ci-assembly
-            work/visualbook/ci-batch-sweep
-            work/visualbook/ci-auto-spacing
-            work/visualbook/ci-aligned-inputs
-            work/visualbook/ci-generalized-kernels
-            work/visualbook/ci-failures
-            work/visualbook/ci-program-controls
-            work/visualbook/ci-spatial-controls
-            work/visualbook/ci-interactions
-            work/visualbook/ci-motion
-            work/visualbook/ci-motion-protocol
-            work/visualbook/ci-designs
+            components/visualbook-harness/work/visualbook/frozen-checks/*/math
+            components/visualbook-harness/work/visualbook/frozen-checks/*/relations
+            components/visualbook-harness/work/visualbook/frozen-checks/*/reading
+            components/visualbook-harness/work/visualbook/ci-tools
+            components/visualbook-harness/work/visualbook/ci-reader-controls
+            components/visualbook-harness/work/visualbook/ci-composition
+            components/visualbook-harness/work/visualbook/ci-domain
+            components/visualbook-harness/work/visualbook/ci-math-reader
+            components/visualbook-harness/work/visualbook/ci-modes
+            components/visualbook-harness/work/visualbook/ci-choices
+            components/visualbook-harness/work/visualbook/ci-recipes
+            components/visualbook-harness/work/visualbook/ci-build-state
+            components/visualbook-harness/work/visualbook/ci-design-protocol
+            components/visualbook-harness/work/visualbook/ci-preparation
+            components/visualbook-harness/work/visualbook/ci-source-capture
+            components/visualbook-harness/work/visualbook/ci-reading
+            components/visualbook-harness/work/visualbook/ci-cases
+            components/visualbook-harness/work/visualbook/ci-partition
+            components/visualbook-harness/work/visualbook/ci-reader-protocol
+            components/visualbook-harness/work/visualbook/ci-rebuild
+            components/visualbook-harness/work/visualbook/ci-assembly
+            components/visualbook-harness/work/visualbook/ci-batch-sweep
+            components/visualbook-harness/work/visualbook/ci-auto-spacing
+            components/visualbook-harness/work/visualbook/ci-aligned-inputs
+            components/visualbook-harness/work/visualbook/ci-generalized-kernels
+            components/visualbook-harness/work/visualbook/ci-failures
+            components/visualbook-harness/work/visualbook/ci-program-controls
+            components/visualbook-harness/work/visualbook/ci-spatial-controls
+            components/visualbook-harness/work/visualbook/ci-interactions
+            components/visualbook-harness/work/visualbook/ci-motion
+            components/visualbook-harness/work/visualbook/ci-motion-protocol
+            components/visualbook-harness/work/visualbook/ci-designs
   check:
     runs-on: ubuntu-latest
     steps:
@@ -104,6 +116,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: components/visualbook-harness/package-lock.json
       - run: python tools/bench.py check
       - run: python tools/bench.py prepare softmax --out /tmp/softmax-brief
       - run: python -m compileall -q tools
@@ -120,6 +133,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: components/visualbook-harness/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: node tools/studio_smoke.mjs /tmp/timing-studio-smoke

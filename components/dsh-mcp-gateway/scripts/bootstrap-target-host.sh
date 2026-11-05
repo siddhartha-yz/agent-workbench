@@ -4,6 +4,8 @@ set -euo pipefail
 NODE_VERSION="24.19.0"
 DSH_VERSION="0.1.2-rc.1"
 SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=component-source.sh
+source "$SOURCE_ROOT/scripts/component-source.sh"
 START_SERVICES=1
 REPLACE_SOURCE=0
 
@@ -16,7 +18,7 @@ single-host production layout, run the repository preflight, then start the
 systemd services.
 
 Options:
-  --source PATH       Source git checkout (default: repository containing script)
+  --source PATH       Gateway component or monorepo checkout (default: component containing script)
   --no-start          Install and preflight only; do not enable/start services
   --replace-source    Replace an existing /srv/dsh-mcp-gateway source tree
   -h, --help          Show this help
@@ -58,6 +60,8 @@ while (($#)); do
   esac
 done
 
+SOURCE_ROOT="$(gateway_source_root "$SOURCE_ROOT")"
+
 if [[ ${EUID} -ne 0 ]]; then
   echo "bootstrap-target-host.sh must run as root (for example with sudo)." >&2
   exit 1
@@ -94,6 +98,8 @@ if [[ -n "$(git -C "$SOURCE_ROOT" status --porcelain --untracked-files=no)" ]]; 
   exit 1
 fi
 SOURCE_COMMIT="$(git -C "$SOURCE_ROOT" rev-parse HEAD)"
+SOURCE_TREE_REF="$(gateway_archive_ref "$SOURCE_ROOT" "$SOURCE_COMMIT")"
+SOURCE_GIT_ROOT="$(git -C "$SOURCE_ROOT" rev-parse --show-toplevel)"
 
 detect_arch() {
   case "$(uname -m)" in
@@ -227,7 +233,7 @@ if [[ -e /srv/dsh-mcp-gateway ]]; then
   rm -rf /srv/dsh-mcp-gateway
 fi
 install -d -o root -g root -m 0755 /srv/dsh-mcp-gateway
-timeout --signal=TERM --kill-after=10s 600s git -C "$SOURCE_ROOT" archive "$SOURCE_COMMIT" | \
+timeout --signal=TERM --kill-after=10s 600s git -C "$SOURCE_GIT_ROOT" archive "$SOURCE_TREE_REF" | \
   timeout --signal=TERM --kill-after=10s 600s tar -x -C /srv/dsh-mcp-gateway
 printf '%s\n' "$SOURCE_COMMIT" > /srv/dsh-mcp-gateway/.deployed-git-commit
 chmod 0644 /srv/dsh-mcp-gateway/.deployed-git-commit

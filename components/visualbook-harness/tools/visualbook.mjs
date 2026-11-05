@@ -1191,7 +1191,7 @@ async function main() {
     }));
     const source = {
       title: "可复用设计与连续交互",
-      sourceUrl: "https://github.com/siddhartha-yz/visualbook-harness",
+      sourceUrl: "https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness",
       sourceSha256: hash(JSON.stringify(blocks)),
       blocks,
     };

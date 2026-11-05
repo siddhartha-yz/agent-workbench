@@ -4,6 +4,13 @@
 
 ## 安装与导入
 
+源码入口为 [Agent Workbench / VisualBook Harness](https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness)。以下命令在该组件目录运行：
+
+```bash
+git clone https://github.com/siddhartha-yz/agent-workbench.git
+cd agent-workbench/components/visualbook-harness
+```
+
 要求 Node 22+、Python 3、官方 Codex CLI、Chromium。依赖和第三方固定源码放在忽略的 work/。
 
 ```bash

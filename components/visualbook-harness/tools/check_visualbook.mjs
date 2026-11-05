@@ -21,7 +21,7 @@ const blocks = Array.from({ length: 6 }, (_, i) => ({
 }));
 const source = {
   title: "工具控制样本",
-  sourceUrl: "https://github.com/siddhartha-yz/visualbook-harness",
+  sourceUrl: "https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness",
   sourceSha256: "maintenance-authored",
   blocks,
 };

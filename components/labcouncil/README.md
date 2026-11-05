@@ -1,5 +1,7 @@
 # LabCouncil
 
+LabCouncil is maintained as an independent component of [Agent Workbench](https://github.com/siddhartha-yz/agent-workbench/tree/main/components/labcouncil). Its commands, local configuration, and runtime state remain separate from the other components.
+
 **Share an idea. Let agents work. Keep the conversation going.**
 
 LabCouncil is an open-source prototype for a personal research group with AI agents and a human researcher. The main interface is a continuous group chat: share an idea, discuss progress, add resources or constraints, and agree on work in the conversation. Agents save reports, tool results and failed attempts. The project retains its inputs, plans, evidence and discussion as work changes.
@@ -8,11 +10,15 @@ LabCouncil is an open-source prototype for a personal research group with AI age
 
 ## Try the local meeting
 
-From the repository root, with Python 3.11+ on Linux:
+Clone Agent Workbench and enter the LabCouncil component, with Python 3.11+ on Linux:
 
 ```bash
+git clone https://github.com/siddhartha-yz/agent-workbench.git
+cd agent-workbench/components/labcouncil
 python3 -m labcouncil start
 ```
+
+Run the commands below from this component directory. To inspect or stop the local services, use `python3 -m labcouncil status` or `python3 -m labcouncil stop` from the same directory.
 
 Open [http://127.0.0.1:8765](http://127.0.0.1:8765). Send an idea to create a group, then talk to it directly. Questions do not need a meeting mode. Clear work instructions proceed within existing permissions and budgets. Tentative ideas become a coordinator proposal; agree or revise it in conversation. Say “暂停一下” or “恢复工作” to control new task starts. Resources, time and requirements can be added in chat; explicit permission statements such as “允许模型调用” are repeated for agreement before execution. Reports and original evidence open from message attachments. Click the LabCouncil character/name for activity, context and settings; the clock button opens activity. A new group's optional ellipsis menu selects the executor.
 
@@ -73,7 +79,7 @@ Upstream projects remain candidates. We will record reproducible checks and thei
 
 The [first API check](reproductions/2026-10-04-gemini-connectivity/REPORT.md) passed. This verifies one fixed text response, not an agent workflow or scientific result.
 
-Copy `.env.example` to a local `.env` and fill `GEMINI_API_KEY`. The `.env` file is excluded from Git. Run from the repository root:
+Copy `.env.example` to a local `.env` in `components/labcouncil` and fill `GEMINI_API_KEY`. The `.env` file is excluded from Git. Run from the LabCouncil component directory:
 
 ```bash
 python3 reproductions/check_gemini_connectivity.py --output logs/gemini-check-01.json

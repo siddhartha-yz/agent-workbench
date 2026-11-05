@@ -21,8 +21,8 @@ dev = ["mcp==2.0.0", "ruff>=0.16,<1"]
 all = ["mcp==2.0.0"]
 
 [project.urls]
-Repository = "https://github.com/siddhartha-yz/dsh-mcp-gateway"
-Issues = "https://github.com/siddhartha-yz/dsh-mcp-gateway/issues"
+Repository = "https://github.com/siddhartha-yz/agent-workbench/tree/main/components/dsh-mcp-gateway"
+Issues = "https://github.com/siddhartha-yz/agent-workbench/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

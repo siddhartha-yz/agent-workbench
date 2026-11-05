@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck source=component-source.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/component-source.sh"
+
 fail() {
   printf 'install-dev-hot-reload: %s\n' "$*" >&2
   exit 1
@@ -28,9 +31,9 @@ done
 
 [[ -n "$SOURCE_ROOT" ]] || fail '--source is required'
 id "$DEV_USER" >/dev/null 2>&1 || fail "unknown user: $DEV_USER"
-SOURCE_ROOT=$(realpath -e -- "$SOURCE_ROOT")
+SOURCE_ROOT=$(gateway_source_root "$SOURCE_ROOT")
 [[ -d "$SOURCE_ROOT" ]] || fail 'source is not a directory'
-[[ -d "$SOURCE_ROOT/.git" || -f "$SOURCE_ROOT/.git" ]] || fail 'source is not a git worktree'
+[[ "$(git -C "$SOURCE_ROOT" rev-parse --is-inside-work-tree 2>/dev/null || true)" == true ]] || fail 'source is not a git worktree'
 [[ -f "$SOURCE_ROOT/scripts/dev-hot-reload-root.sh" ]] || fail 'source does not contain dev-hot-reload-root.sh'
 [[ -f "$SOURCE_ROOT/src/dsh_mcp_gateway/__init__.py" ]] || fail 'gateway source is missing'
 

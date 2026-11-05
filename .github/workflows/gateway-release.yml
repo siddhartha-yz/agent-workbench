@@ -1,25 +1,25 @@
-name: Release
+name: Gateway Release
 
 "on":
   push:
     tags:
-      - "v*"
-    branches:
-      - main
-    paths:
-      - ".github/workflows/release.yml"
+      - "gateway-v*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing v* tag to publish or refresh"
+        description: "Existing gateway-v* tag to publish or refresh"
         required: true
         type: string
+
+defaults:
+  run:
+    working-directory: components/dsh-mcp-gateway
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.event_name }}-${{ github.ref }}-${{ inputs.tag || 'auto' }}
+  group: gateway-release-${{ github.event_name }}-${{ github.ref }}-${{ inputs.tag || 'auto' }}
   cancel-in-progress: false
 
 jobs:
@@ -47,16 +47,16 @@ jobs:
           elif [[ "$REF_TYPE" == "tag" ]]; then
             tag="$REF_NAME"
           else
-            mapfile -t release_tags < <(git tag --list 'v*' --sort=-v:refname)
-            tag="${release_tags[0]:-}"
+            echo "Gateway releases require a gateway-v* tag or an explicit dispatch tag" >&2
+            exit 1
           fi
-          if [[ -z "$tag" || ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+          if [[ -z "$tag" || ! "$tag" =~ ^gateway-v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "Unable to resolve a valid release tag" >&2
             exit 1
           fi
           git rev-parse --verify "refs/tags/$tag^{commit}" >/dev/null
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#gateway-v}" >> "$GITHUB_OUTPUT"
 
       - name: Check out tagged source
         shell: bash
@@ -70,7 +70,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: pyproject.toml
+          cache-dependency-path: components/dsh-mcp-gateway/pyproject.toml
 
       - name: Verify release metadata
         shell: bash
@@ -79,7 +79,7 @@ jobs:
           VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          test -f "docs/releases/$TAG.md"
+          test -f "docs/releases/v$VERSION.md"
           python - "$VERSION" <<'PY'
           import pathlib, re, sys
           expected = sys.argv[1]
@@ -102,10 +102,10 @@ jobs:
       - name: Prepare release notes
         shell: bash
         env:
-          TAG: ${{ steps.release.outputs.tag }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          awk 'NR == 1 && /^# / { next } { print }' "docs/releases/$TAG.md" > /tmp/release-notes.md
+          awk 'NR == 1 && /^# / { next } { print }' "docs/releases/v$VERSION.md" > /tmp/release-notes.md
 
       - name: Create or update GitHub Release
         shell: bash
@@ -120,7 +120,7 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --title "$title" \
               --notes-file /tmp/release-notes.md \
-              --latest
+              --latest=false
             gh release upload "$TAG" dist/* \
               --repo "$GITHUB_REPOSITORY" \
               --clobber
@@ -130,5 +130,5 @@ jobs:
               --verify-tag \
               --title "$title" \
               --notes-file /tmp/release-notes.md \
-              --latest
+              --latest=false
           fi

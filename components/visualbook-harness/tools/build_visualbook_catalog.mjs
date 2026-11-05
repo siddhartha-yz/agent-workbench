@@ -53,7 +53,7 @@ export async function buildCatalog(out, { ids = null } = {}) {
     const source = {
         title: design.title,
         sourceName: "维护者编写的共享设计示例",
-        sourceUrl: "https://github.com/siddhartha-yz/visualbook-harness",
+        sourceUrl: "https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness",
         sourceSha256: "maintenance-control",
         blocks,
       },

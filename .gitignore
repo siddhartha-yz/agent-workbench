@@ -1,0 +1,6 @@
+# Workbench-local scratch and environments; components retain their own rules.
+/work/
+/.venv/
+__pycache__/
+*.py[cod]
+.DS_Store

@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 
 SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=component-source.sh
+source "$SOURCE_ROOT/scripts/component-source.sh"
 RUNTIME_LIVE=/opt/dsh-runtime
 SOURCE_LIVE=/srv/dsh-mcp-gateway
 DSH_HOME=/var/lib/dsh-harness
@@ -46,6 +48,8 @@ while (($#)); do
   esac
 done
 
+SOURCE_ROOT="$(gateway_source_root "$SOURCE_ROOT")"
+
 if [[ ${EUID} -ne 0 ]]; then
   echo "upgrade-live-host.sh must run as root (for example with sudo)." >&2
   exit 1
@@ -64,6 +68,8 @@ done
   exit 1
 }
 TARGET_COMMIT="$(git -C "$SOURCE_ROOT" rev-parse HEAD)"
+SOURCE_TREE_REF="$(gateway_archive_ref "$SOURCE_ROOT" "$TARGET_COMMIT")"
+SOURCE_GIT_ROOT="$(git -C "$SOURCE_ROOT" rev-parse --show-toplevel)"
 
 for path in \
   "$RUNTIME_LIVE/node/bin/node" \
@@ -273,7 +279,7 @@ install -o root -g root -m 0644 "$SOURCE_ROOT/dsh-browser-worker/index.js" "$RUN
 # Stage the exact source commit and a fresh gateway virtualenv. No mutable
 # production state lives in this tree.
 echo "Staging gateway source $TARGET_COMMIT..."
-git -C "$SOURCE_ROOT" archive "$TARGET_COMMIT" | tar -x -C "$SOURCE_STAGE"
+git -C "$SOURCE_GIT_ROOT" archive "$SOURCE_TREE_REF" | tar -x -C "$SOURCE_STAGE"
 printf '%s\n' "$TARGET_COMMIT" > "$SOURCE_STAGE/.deployed-git-commit"
 chmod 0644 "$SOURCE_STAGE/.deployed-git-commit"
 python3 -m venv "$SOURCE_STAGE/.venv"

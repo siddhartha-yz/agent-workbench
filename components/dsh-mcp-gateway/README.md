@@ -6,6 +6,18 @@ ChatGPT Web remains the only primary reasoning/model agent. This project connect
 
 The repository-level architecture contract is [`AGENTS.md`](AGENTS.md). When older prototype code or documentation conflicts with that contract, the contract wins unless the repository owner explicitly changes the product direction. The ordered personal development roadmap is [`docs/roadmap.md`](docs/roadmap.md).
 
+This component is maintained in [`agent-workbench`](https://github.com/siddhartha-yz/agent-workbench/tree/main/components/dsh-mcp-gateway). The package, `dsh-mcp-gateway` command, Python module, MCP surface, and DSH architecture contract keep their existing names and behavior.
+
+From a monorepo checkout, run all commands below inside the component:
+
+```sh
+cd components/dsh-mcp-gateway
+```
+
+Deployment helpers accept `--source` pointing either to this component or the monorepo root. They export only the gateway component from the selected clean Git commit into the existing `/srv/dsh-mcp-gateway` layout; no sibling component is deployed. See [`docs/deployment.md`](docs/deployment.md).
+
+Gateway CI and releases live in the repository-root [gateway CI](https://github.com/siddhartha-yz/agent-workbench/blob/main/.github/workflows/gateway-ci.yml) and [gateway release](https://github.com/siddhartha-yz/agent-workbench/blob/main/.github/workflows/gateway-release.yml) workflows. New releases require a `gateway-vMAJOR.MINOR.PATCH` tag and matching `docs/releases/vMAJOR.MINOR.PATCH.md` notes. The original [v0.1.0 release](https://github.com/siddhartha-yz/agent-workbench/releases/tag/v0.1.0) remains available in the renamed Agent Workbench repository.
+
 ## Target architecture
 
 ```text

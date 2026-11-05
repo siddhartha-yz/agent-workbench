@@ -4,15 +4,26 @@
 
 ## 开始使用
 
-需要 Python 3.11 或更新版本。应用本身只有标准库依赖。默认模拟模式不用 API key；Codex 后台复用本机 `codex login`；只有 DeepSeek 后台读取仓库根目录被 Git 忽略的 `.env`。从仓库根目录执行：
+需要 Python 3.11 或更新版本。应用本身只有标准库依赖。LabCouncil 现在作为 [Agent Workbench 的独立组件](https://github.com/siddhartha-yz/agent-workbench/tree/main/components/labcouncil)维护。默认模拟模式不用 API key；Codex 后台复用本机 `codex login`；只有 DeepSeek 后台读取 `components/labcouncil/` 下被 Git 忽略的 `.env`。首次使用时执行：
 
 ```bash
+git clone https://github.com/siddhartha-yz/agent-workbench.git
+cd agent-workbench/components/labcouncil
 python3 -m labcouncil start
 ```
+
+后续所有命令均从 `components/labcouncil/` 执行。配置、数据库和日志仍由 LabCouncil 单独管理，不需要安装或启动另外两个组件。已有本地实例应保留自己的 `.env` 和 `workspaces/`；切换到新检出目录时，先停止旧实例，再将这两个本地目录复制到新组件目录，或用 `--database` 指定原数据库的绝对路径。
 
 然后打开 [http://127.0.0.1:8765](http://127.0.0.1:8765)。不要直接打开 HTML 文件。
 
 `start` 在 Linux 上启动独立网页进程和 worker，重复运行会复用本实例。不会注册开机服务。每个实例使用独立运行目录；默认状态位于忽略的 `workspaces/labcouncil/`。
+
+查看和停止默认实例：
+
+```bash
+python3 -m labcouncil status
+python3 -m labcouncil stop
+```
 
 也可以各开一个终端，手动运行：
 

@@ -40,7 +40,7 @@ fs.writeFileSync(
   build(
     {
       title: "手动交互控制",
-      sourceUrl: "https://github.com/siddhartha-yz/visualbook-harness",
+      sourceUrl: "https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness",
       sourceSha256: "maintenance-fixture",
       blocks,
     },

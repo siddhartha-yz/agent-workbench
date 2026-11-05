@@ -1,6 +1,6 @@
 [Unit]
 Description=OAuth-protected MCP gateway for DeepSeek Harness
-Documentation=https://github.com/siddhartha-yz/dsh-mcp-gateway
+Documentation=https://github.com/siddhartha-yz/agent-workbench/tree/main/components/dsh-mcp-gateway
 After=network-online.target dsh-web-host.service
 Wants=network-online.target dsh-web-host.service
 

@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 
 SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=component-source.sh
+source "$SOURCE_ROOT/scripts/component-source.sh"
 RUNTIME_NODE=/opt/dsh-runtime/node/bin
 CACHE_DIR=/var/cache/dsh-runtime-npm
 APPARMOR_PROFILE_TARGET=/etc/apparmor.d/dsh-browser-worker
@@ -41,6 +43,8 @@ while (($#)); do
       ;;
   esac
 done
+
+SOURCE_ROOT="$(gateway_source_root "$SOURCE_ROOT")"
 
 if [[ ${EUID} -ne 0 ]]; then
   echo "provision-browser-deps.sh must run as root (for example with sudo)." >&2

@@ -1,8 +1,14 @@
-name: Local prototype tests
+name: LabCouncil tests
 
 on:
   push:
+    paths:
+      - 'components/labcouncil/**'
+      - '.github/workflows/labcouncil.yml'
   pull_request:
+    paths:
+      - 'components/labcouncil/**'
+      - '.github/workflows/labcouncil.yml'
 
 permissions:
   contents: read
@@ -11,6 +17,9 @@ jobs:
   prototype:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: components/labcouncil
     strategy:
       matrix:
         python: ['3.11', '3.14']

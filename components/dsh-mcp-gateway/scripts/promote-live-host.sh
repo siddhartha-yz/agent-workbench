@@ -6,6 +6,8 @@ set -euo pipefail
 # tunnel state into reboot-safe system locations managed by systemd.
 
 SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=component-source.sh
+source "$SOURCE_ROOT/scripts/component-source.sh"
 LIVE_DSH_HOME="/home/ubuntu/workspace/.dsh-chatgpt-live-home"
 LIVE_GATEWAY_STATE="/home/ubuntu/workspace/.dsh-chatgpt-live-gateway/state"
 LIVE_ADMIN_PIN_FILE="/home/ubuntu/workspace/.dsh-chatgpt-live-gateway/admin-pin"
@@ -32,7 +34,7 @@ script fails closed if ports 18401/18766 are still listening or if the old
 Cloudflare config is still owned by a running cloudflared process.
 
 Options:
-  --source PATH                  Source checkout to deploy.
+  --source PATH                  Gateway component or monorepo checkout to deploy.
   --live-dsh-home PATH           Existing DSH_HOME to migrate.
   --live-gateway-state PATH      Existing gateway OAuth state directory.
   --live-admin-pin-file PATH     Existing owner PIN file (mode 0600).
@@ -70,6 +72,8 @@ while (($#)); do
     *) echo "unknown argument: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+SOURCE_ROOT="$(gateway_source_root "$SOURCE_ROOT")"
 
 if [[ ${EUID} -ne 0 ]]; then
   echo "promote-live-host.sh must run as root (for example with sudo)." >&2

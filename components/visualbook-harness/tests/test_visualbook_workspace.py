@@ -34,6 +34,22 @@ class WorkspaceTests(unittest.TestCase):
             (root / "toolchain.json").write_text("{}")
             self.assertEqual(workspace.workspace_root(root), root)
 
+    def test_nested_component_keeps_its_own_work_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory)
+            (repository / ".git").mkdir()
+            owner = repository / "components" / "visualbook-harness"
+            frozen = owner / "work" / "snapshot"
+            frozen.mkdir(parents=True)
+            (frozen / "toolchain.json").write_text(json.dumps({"workspace": str(owner)}))
+            self.assertEqual(workspace.workspace_root(frozen), owner)
+            # A sibling component cannot inherit this component's lock or budget.
+            sibling = repository / "components" / "other" / "work" / "snapshot"
+            sibling.mkdir(parents=True)
+            (sibling / "toolchain.json").write_text(json.dumps({"workspace": str(owner)}))
+            with self.assertRaises(ValueError):
+                workspace.workspace_root(sibling)
+
     def test_unrelated_owner_cannot_redirect_authoring_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

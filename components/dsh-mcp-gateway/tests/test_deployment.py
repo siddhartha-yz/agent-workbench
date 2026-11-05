@@ -29,7 +29,7 @@ BOOTSTRAP_HOST = ROOT / "scripts" / "bootstrap-target-host.sh"
 PUBLIC_ORIGIN_VALIDATOR = ROOT / "scripts" / "validate-public-origin.py"
 BACKUP_HOST = ROOT / "scripts" / "backup-host-state.sh"
 VERIFY_BACKUP = ROOT / "scripts" / "verify-backup-restore.sh"
-CI_WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
+CI_WORKFLOW = ROOT.parents[1] / ".github" / "workflows" / "gateway-ci.yml"
 GATEWAY_VERSION = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
 DSH_RUNTIME_PACKAGE = json.loads((ROOT / "deploy" / "dsh-runtime" / "package.json").read_text(encoding="utf-8"))
 DSH_VERSION = DSH_RUNTIME_PACKAGE["dependencies"]["@deepseek-ai/dsh"]
@@ -218,7 +218,7 @@ class DeploymentTemplateTests(unittest.TestCase):
 
         self.assertIn("name: DSH runtime install smoke", workflow)
         self.assertIn("python scripts/verify-dsh-runtime-lock.py", workflow)
-        self.assertIn("working-directory: deploy/dsh-runtime", workflow)
+        self.assertIn("working-directory: components/dsh-mcp-gateway/deploy/dsh-runtime", workflow)
         self.assertIn("npm ci --no-audit --no-fund", workflow)
         self.assertIn('test "$(node_modules/.bin/dsh --version)" = "0.1.2-rc.1"', workflow)
         self.assertIn("node -e \"require('koffi')\"", workflow)
@@ -373,7 +373,7 @@ class DeploymentTemplateTests(unittest.TestCase):
             script,
         )
         self.assertIn(
-            'timeout --signal=TERM --kill-after=10s 600s git -C "$SOURCE_ROOT" archive "$SOURCE_COMMIT" | \\\n  timeout --signal=TERM --kill-after=10s 600s tar -x -C /srv/dsh-mcp-gateway',
+            'timeout --signal=TERM --kill-after=10s 600s git -C "$SOURCE_GIT_ROOT" archive "$SOURCE_TREE_REF" | \\\n  timeout --signal=TERM --kill-after=10s 600s tar -x -C /srv/dsh-mcp-gateway',
             script,
         )
         self.assertIn("/opt/dsh-runtime/node/bin/npm ci", script)

@@ -38,7 +38,9 @@ The deployment lock currently uses `@deepseek-ai/dsh@0.1.2-rc.1`, `pnpm@10.34.5`
 
 ## Bootstrap
 
-From a clean checkout:
+From a clean checkout, first enter `components/dsh-mcp-gateway` when using the `agent-workbench` monorepo. The helpers also accept `--source /path/to/agent-workbench` or `--source /path/to/agent-workbench/components/dsh-mcp-gateway`. Source deployment exports only that component tree from the exact clean Git commit, keeping the existing `/srv/dsh-mcp-gateway` paths, systemd names, CLI, runtime locks, and mutable state locations.
+
+From the component directory:
 
 ```sh
 sudo ./scripts/bootstrap-target-host.sh

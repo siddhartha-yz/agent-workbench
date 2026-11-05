@@ -14,6 +14,13 @@
 
 ## 最短运行方式
 
+源码现维护在 [Agent Workbench](https://github.com/siddhartha-yz/agent-workbench/tree/main/components/visualbook-harness)。先克隆主仓库并进入本组件；以下命令都在组件目录运行：
+
+```bash
+git clone https://github.com/siddhartha-yz/agent-workbench.git
+cd agent-workbench/components/visualbook-harness
+```
+
 需要 Node 22+、Python 3、已登录的官方 Codex CLI，以及 Chromium。首次只安装固定运行依赖：
 
 ```bash

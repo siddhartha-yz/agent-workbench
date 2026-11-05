@@ -17,7 +17,7 @@ fail() {
 source "$CONFIG"
 [[ ${SOURCE_ROOT:-} == /* ]] || fail 'SOURCE_ROOT must be absolute'
 SOURCE_ROOT=$(realpath -e -- "$SOURCE_ROOT")
-[[ -d "$SOURCE_ROOT/.git" || -f "$SOURCE_ROOT/.git" ]] || fail 'SOURCE_ROOT is not a git worktree'
+[[ "$(git -C "$SOURCE_ROOT" rev-parse --is-inside-work-tree 2>/dev/null || true)" == true ]] || fail 'SOURCE_ROOT is not a git worktree'
 [[ -d "$LIVE_ROOT" && -x "$LIVE_ROOT/.venv/bin/python" ]] || fail 'live gateway is not installed'
 
 reject_special_files() {

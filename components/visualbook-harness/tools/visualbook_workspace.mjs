@@ -8,7 +8,11 @@ export function workspaceRoot(toolRoot) {
   const data = JSON.parse(fs.readFileSync(manifest));
   const owner = path.resolve(data.workspace ?? toolRoot);
   if (owner === toolRoot) return toolRoot;
-  if (!toolRoot.startsWith(owner + path.sep + "work" + path.sep) || !fs.existsSync(owner + "/.git"))
+  // Component workspaces may be nested below a monorepo's .git.
+  let repository = owner;
+  while (!fs.existsSync(path.join(repository, ".git")) && path.dirname(repository) !== repository)
+    repository = path.dirname(repository);
+  if (!toolRoot.startsWith(owner + path.sep + "work" + path.sep) || !fs.existsSync(path.join(repository, ".git")))
     throw Error("Frozen tools must be inside the recorded repository work/ directory");
   return owner;
 }
